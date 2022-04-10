@@ -30,7 +30,7 @@ async function getPlayerData() {
                     player.c_elo = 0
                     player.p_elo = 0
                 }
-            }).then(await timer(500))
+            }).then(await timer(800))
             .catch(err => {
                 player.c_elo = 0
                 player.p_elo = 0
