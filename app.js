@@ -37,10 +37,10 @@ async function getPlayerData() {
                 player.p_elo = 0
 
                 consoleLog(`${player.name} - error : no 1v1 ranked records found`)
-                console.log(err.response)
+                // console.log(err.response)
                 if (err.response.status === 429) {
                     shouldStop = true
-                    consoleLog(`BRAWLHALLA API ERROR, RELOAD AND TRY AGAIN IN`)
+                    consoleLog(`BRAWLHALLA API ERROR, RELOAD AND TRY AGAIN IN A FEW MINUTES`)
                     cleanupApp()
                 }
             })
