@@ -20,7 +20,7 @@ async function getPlayerData() {
         if (shouldStop) {
             break;
         }
-        axios.get(encodeURI(brawlAPI + `ranked/name?name=${player.name}`))
+        await axios.get(encodeURI(brawlAPI + `ranked/name?name=${player.name}`))
             .then(res => {
                 player.c_elo = 0
                 player.p_elo = 0
@@ -37,10 +37,10 @@ async function getPlayerData() {
                 player.p_elo = 0
 
                 consoleLog(`${player.name} - error : no 1v1 ranked records found`)
-                console.log(err.response.status)
+                console.log(err.response)
                 if (err.response.status === 429) {
                     shouldStop = true
-                    consoleLog("BRAWLHALLA API ERROR, RELOAD AND TRY AGAIN")
+                    consoleLog(`BRAWLHALLA API ERROR, RELOAD AND TRY AGAIN IN`)
                     cleanupApp()
                 }
             })
