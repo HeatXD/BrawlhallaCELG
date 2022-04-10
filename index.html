@@ -1,27 +1,46 @@
+<!doctype html>
+<html>
 
-    <!doctype html>
-    <html>
-    <head>
+<head>
     <title>BrawlhallaCELG</title>
     <meta name="description" content="BrawlhallaCELG">
     <meta name="keywords" content="BrawlhallaCELG">
-    <link rel="stylesheet" href="style.css"/>
-    </head>
-    <body>
-    <form id="form_login">
-        <p>
-            <input type="text" id="username" placeholder="username" />
-        </p>
-        <p>
-            <input type="password" id="password" placeholder="password" />
-        </p>
-        <p>
-            <input type="text" id="server" placeholder="server" />
-        </p>
-        <p>
-            <button id="submitbutton" type="button">Se connecter</button>
-        </p>
-    </form>
-    </body>
-    </html>
+    <link rel="stylesheet" href="style.css" />
+</head>
 
+<body>
+    <h1>Brawlhalla Discord Clan ELO List Webhook</h1><br />
+    <h3>This Discord webhook uses the unoffical brawlhalla api to search and lookup the ranked data for each member of
+        your clan. <br /> When it has found the data sends the data to the Discord webhook in a presentable
+        format.<br />
+        This is all done <u>locally on your computer</u> I'm not saving any data filled into the program.
+    </h3>
+    <div id="content">
+        <form id="dwhform" onsubmit="startProcess(event)">
+            <label for="dwhurl">Discord Webhook URL</label><br>
+            <input required type="password" id="dwhurl" placeholder="Discord Webhook URL" /> <br />
+            <label for="clanid">Brawlhalla Clan ID</label><br>
+            <input required type="number" id="clanid" placeholder="Brawlhalla Clan ID" /><br />
+            <label for="season">Current Brawlhalla Ranked Season</label><br>
+            <input required type="number" id="season" placeholder="Current Brawlhalla Ranked Season" /><br />
+            <input id="submit" type="submit" value="Generate ELO List!" />
+        </form>
+        <div id="console">
+            <ul id="log">
+                <li>Status Log: </li>
+            </ul>
+        </div>
+    </div>
+    <div id="footer">
+        Made by HeatXD <br />
+        <a href="https://github.com/HeatXD/BrawlhallaCELG">Source Code</a>
+    </div>
+</body>
+<script>
+    function startProcess(event) {
+        event.preventDefault();
+        document.querySelector('#submit').disabled = true;
+    }
+</script>
+
+</html>
