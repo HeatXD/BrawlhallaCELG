@@ -39,7 +39,7 @@ async function getPlayerData() {
                 console.log(err.response.status)
                 if (err.response.status === 429) {
                     shouldStop = true
-                    consoleLog("API ERROR, TRY AGAIN")
+                    consoleLog("BRAWLHALLA API ERROR, RELOAD AND TRY AGAIN")
                     cleanupApp()
                 }
             })
