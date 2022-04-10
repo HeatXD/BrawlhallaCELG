@@ -67,17 +67,17 @@ function createMessage() {
     consoleLog("Formatting player data.")
     msg.content = "```json\n"
     msg.content += `Clan: ${data.clan} (id: ${clanID})\nSeason: ${season}\n\n`
-    msg.content += "name   current elo   peak elo\n"
+    msg.content += "Name  Current ELO  Peak ELO\n"
     data.players.forEach(player => {
-        msg.content += `${player.name}   ${player.c_elo}   ${player.p_elo}\n`
+        msg.content += `${player.name}  ${player.c_elo}  ${player.p_elo}\n`
     })
     // remove the people who dont play ranked and then calc tha avg
     const result = data.players.filter(hasPlayedRanked)
     const avg = Math.floor(findAverageELO(result))
     //console.log(avg);
-    msg.content += `\nAVG PEAK: ${avg} \n`
-    msg.content += `\nSNAPSHOT TAKEN AT: ${new Date().toLocaleString()} \n\n`
-    msg.content += ` _Made by HeatXD_\n`
+    msg.content += `\nAVG PEAK: ${avg}\n`
+    msg.content += `\nSNAPSHOT TAKEN AT: ${new Date().toLocaleString()}\n\n`
+    msg.content += `Made by HeatXD\n`
     msg.content += "```"
 }
 
