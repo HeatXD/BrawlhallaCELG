@@ -15,9 +15,12 @@ const timer = ms => new Promise(res => setTimeout(res, ms))
 
 async function getPlayerData() {
     consoleLog("Cleaning player data.")
-
+    let shouldStop = false;
     for (const player of data.players) {
-        axios.get(encodeURI(brawlAPI + `ranked/id?brawlhalla_id=${player.id}`))
+        if (shouldStop) {
+            break;
+        }
+        await axios.get(encodeURI(brawlAPI + `ranked/id?brawlhalla_id=${player.id}`))
             .then(res => {
                 const brawldata = res.data.data
                 player.c_elo = brawldata.rating
@@ -27,12 +30,18 @@ async function getPlayerData() {
                     player.c_elo = 0
                     player.p_elo = 0
                 }
-            })
-            .then(await timer(750)) // dont want to get rate limited
-            .catch(_ => {
+            }).then(await timer(500))
+            .catch(err => {
                 player.c_elo = 0
                 player.p_elo = 0
-                consoleLog(`${player.name} - error : no 1v1 ranked records found`);
+
+                consoleLog(`${player.name} - error : no 1v1 ranked records found`)
+                console.log(err.response.status)
+                if (err.response.status === 429) {
+                    shouldStop = true
+                    consoleLog("API ERROR, TRY AGAIN")
+                    cleanupApp()
+                }
             })
     }
 }
