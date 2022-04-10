@@ -27,7 +27,6 @@
         </form>
         <div id="console">
             <ul id="log">
-                <li>Status Log: </li>
             </ul>
         </div>
     </div>
@@ -36,10 +35,16 @@
         <a href="https://github.com/HeatXD/BrawlhallaCELG">Source Code</a>
     </div>
 </body>
+<script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+<script src="app.js"></script>
 <script>
     function startProcess(event) {
-        event.preventDefault();
-        document.querySelector('#submit').disabled = true;
+        event.preventDefault()
+        // close for now open when done
+        document.querySelector('#submit').disabled = true
+        const frm = document.getElementById("dwhform")
+        resetConsole()
+        runSearches(frm)
     }
 </script>
 

@@ -9,7 +9,6 @@ body{
   display:flex;
   font-family: 'Courier New', monospace;
   text-align: center;
-  overflow: hidden;
   min-height: 100vh;
   flex-direction: column;
 }
@@ -41,7 +40,7 @@ input {
 
 #footer {
   margin: auto;
-  height: 4vh;
+  height: 5vh;
   width: 100%;
   background-color: black;
   color: white;
@@ -91,7 +90,7 @@ input {
 }
 
 #log {
-  font-size: medium;
+  font-size:medium;
   list-style-type: none;
   text-align: left;
 }
