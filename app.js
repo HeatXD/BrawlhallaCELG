@@ -20,15 +20,16 @@ async function getPlayerData() {
         if (shouldStop) {
             break;
         }
-        await axios.get(encodeURI(brawlAPI + `ranked/id?brawlhalla_id=${player.id}`))
+        axios.get(encodeURI(brawlAPI + `ranked/name?name=${player.name}`))
             .then(res => {
-                const brawldata = res.data.data
-                player.c_elo = brawldata.rating
-                player.p_elo = brawldata.peak_rating
+                player.c_elo = 0
+                player.p_elo = 0
 
-                if (player.c_elo === undefined) {
-                    player.c_elo = 0
-                    player.p_elo = 0
+                const brawldata = res.data.data
+
+                if (player.id === brawldata.brawlhalla_id) {
+                    player.c_elo = brawldata.rating
+                    player.p_elo = brawldata.peak_rating
                 }
             }).then(await timer(800))
             .catch(err => {
