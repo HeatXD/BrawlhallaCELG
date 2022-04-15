@@ -3,6 +3,7 @@ const brawlAPI = "https://brawlhalla-api.herokuapp.com/v1/"
 let webhookURL;
 let clanID;
 let season;
+let showNotPlayed = true;
 
 const headers = {
     "content-type": "application/json"
@@ -30,20 +31,24 @@ async function getPlayerData() {
                 if (player.id === brawldata.brawlhalla_id) {
                     player.c_elo = brawldata.rating
                     player.p_elo = brawldata.peak_rating
+                } else {
+                    consoleLog(`${player.name} - didnt match given id. no info.`)
                 }
-            }).then(await timer(800))
+            })
+            .then(await timer(800))
             .catch(err => {
                 player.c_elo = 0
                 player.p_elo = 0
 
                 consoleLog(`${player.name} - error : no 1v1 ranked records found`)
-                // console.log(err.response)
-                if (err.response.status === 429) {
+                console.log(err.response.status)
+                if (err.response.status === 429 || err.response.status === 428) {
                     shouldStop = true
                     consoleLog(`BRAWLHALLA API ERROR, RELOAD AND TRY AGAIN IN A FEW MINUTES`)
                     cleanupApp()
                 }
             })
+
     }
 }
 
@@ -79,7 +84,14 @@ function createMessage() {
     msg.content += `Clan: ${data.clan} (id: ${clanID})\nSeason: ${season}\n\n`
     msg.content += "Name  Current ELO  Peak ELO\n"
     data.players.forEach(player => {
-        msg.content += `${player.name}  ${player.c_elo}  ${player.p_elo}\n`
+        if (player.p_elo == 0) {
+            if (showNotPlayed) {
+                msg.content += `${player.name} ?\n`
+            }
+        }
+        else {
+            msg.content += `${player.name}  ${player.c_elo}  ${player.p_elo}\n`
+        }
     })
     // remove the people who dont play ranked and then calc tha avg
     const result = data.players.filter(hasPlayedRanked)
@@ -137,5 +149,6 @@ function runSearches(form) {
     webhookURL = form[0].value
     clanID = form[1].value
     season = form[2].value
+    showNotPlayed = !form[3].checked
     main()
 }
