@@ -48,7 +48,6 @@ async function getPlayerData() {
                 }
             })
         await timer(800)
-
     }
 }
 
