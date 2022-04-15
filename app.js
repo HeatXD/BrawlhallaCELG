@@ -26,8 +26,6 @@ function getPlayerEndpoints() {
 async function getPlayerData() {
     consoleLog("Cleaning player data.")
     const endpoints = getPlayerEndpoints()
-    const secondTry = []
-    console.table(endpoints);
     for (const endpoint of endpoints) {
         try {
             const result = await axios.get(endpoint.endp)
@@ -42,13 +40,9 @@ async function getPlayerData() {
                 endpoint.player.p_elo = 0
             }
         } catch (error) {
-            //console.log(error.response.status)
-            if (error.response.status === 408) {
-                secondTry.push(endpoint)
-            }
-            else if (error.response.status === 429) {
-                consoleLog("BRAWL API ERROR PLEASE TRY AFTER AGAIN WAITING A BIT.")
-                throw Error("Too Many Requests Error")
+            if (error.response.status === 429 || error.response.status === 408) {
+                consoleLog("BRAWL API ERROR PLEASE TRY AFTER AGAIN WAITING A FEW MINUTES.")
+                throw Error("Too Many Requests Error Or Request Timeout Error")
             } else if (error.response.status === 404) {
                 endpoint.player.c_elo = 0
                 endpoint.player.p_elo = 0
@@ -56,35 +50,6 @@ async function getPlayerData() {
             }
         }
     }
-    if (secondTry.length !== 0) {
-        consoleLog(`Trying to find information again for ${secondTry.length} players`)
-        await timer(1000)
-        for (const endpoint of secondTry) {
-            try {
-                const result = await axios.get(endpoint.endp)
-                const resdata = result.data.data;
-                //check if id's match
-                if (endpoint.player.id === resdata.brawlhalla_id) {
-                    endpoint.player.c_elo = resdata.rating
-                    endpoint.player.p_elo = resdata.peak_rating
-                } else {
-                    consoleLog(`${endpoint.player.name} - error : brawlhalla id's don't match`)
-                    endpoint.player.c_elo = 0
-                    endpoint.player.p_elo = 0
-                }
-            } catch (error) {
-                if (error.response.status === 429) {
-                    consoleLog("BRAWL API ERROR PLEASE TRY AFTER AGAIN WAITING A BIT.")
-                    throw Error("Too Many Requests Error")
-                } else if (error.response.status === 404) {
-                    endpoint.player.c_elo = 0
-                    endpoint.player.p_elo = 0
-                    consoleLog(`${endpoint.player.name} - error : no 1v1 ranked records found`)
-                }
-            }
-        }
-    }
-    console.table(data.players)
 }
 
 const findAverageELO = (arr) => {
