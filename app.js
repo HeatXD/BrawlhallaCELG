@@ -35,7 +35,6 @@ async function getPlayerData() {
                     consoleLog(`${player.name} - didnt match given id. no info.`)
                 }
             })
-            .then(await timer(800))
             .catch(err => {
                 player.c_elo = 0
                 player.p_elo = 0
@@ -48,6 +47,7 @@ async function getPlayerData() {
                     cleanupApp()
                 }
             })
+        await timer(800)
 
     }
 }
