@@ -1,4 +1,4 @@
-const brawlAPI = "https://brawlhalla-api.herokuapp.com/v1/"
+const brawlAPI = "https://brawl-api-heat.herokuapp.com"
 
 let webhookURL;
 let clanID;
@@ -12,12 +12,10 @@ const headers = {
 let data = {}
 let msg = {}
 
-const timer = ms => new Promise(res => setTimeout(res, ms))
-
 function getPlayerEndpoints() {
     const endpoints = []
     data.players.forEach(player => endpoints.push({
-        endp: encodeURI(brawlAPI + `ranked/name?name=${player.name}`),
+        endp: encodeURI(`${brawlAPI}/player/${player.id}`),
         player: player
     }))
     return endpoints
@@ -28,14 +26,14 @@ async function getPlayerData() {
     const endpoints = getPlayerEndpoints()
     for (const endpoint of endpoints) {
         try {
-            const result = await axios.get(endpoint.endp)
-            const resdata = result.data.data;
+            const result = await axios.get(endpoint.endp);
+            const resdata = result.data;
             //check if id's match
-            if (endpoint.player.id === resdata.brawlhalla_id) {
-                endpoint.player.c_elo = resdata.rating
-                endpoint.player.p_elo = resdata.peak_rating
+            if (resdata.playerRanked.rating !== undefined) {
+                endpoint.player.c_elo = resdata.playerRanked.rating;
+                endpoint.player.p_elo = resdata.playerRanked.peak_rating;
             } else {
-                consoleLog(`${endpoint.player.name} - error : brawlhalla id's don't match`)
+                consoleLog(`${endpoint.player.name} - error : no ranked records found`)
                 endpoint.player.c_elo = 0
                 endpoint.player.p_elo = 0
             }
@@ -61,10 +59,11 @@ const findAverageELO = (arr) => {
 
 function cleanupClanData(res) {
     consoleLog("Fetching clan data.")
-    const resdata = res.data.data
+    const resdata = res.data
     data.clan = resdata.clan_name
     data.players = []
     for (const key in resdata.clan) {
+        //console.table(resdata.clan[key].brawlhalla_id, resdata.clan[key].name);
         data.players.push({ id: resdata.clan[key].brawlhalla_id, name: resdata.clan[key].name })
     }
 }
@@ -116,7 +115,7 @@ function notifyDiscordHook() {
 }
 
 function main() {
-    axios.get(encodeURI(brawlAPI + "utils/clan?clan_id=" + clanID))
+    axios.get(encodeURI(`${brawlAPI}/clan/${clanID}`))
         .then(res => cleanupClanData(res))
         .then(_ => getPlayerData())
         .then(_ => sortPlayersByPeakElo())
